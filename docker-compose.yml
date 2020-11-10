@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+    node-api-web:
+        container_name: node-api-web
+        restart: always
+        build: .
+        ports:
+            - "5000:3000"
+        links:
+            - node-api-db
+        volumes:
+            - .:/usr/src/app
+    node-api-db:
+        container_name: node-api-db
+        image: mongo
+        ports:
+            - "27025:27017"
+        logging: 
+            driver: none
