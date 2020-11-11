@@ -3,22 +3,23 @@ const express = require('express');
 const routes = require('./routes/routes');
 const config = require('./config/config');
 
-//Crear el servidor Express
+//Create Express Server
 const app = express();
 
-// parse application/x-www-form-urlencoded
+// BodyParser
 app.use(bodyParser.urlencoded({ extended: false }));
-
-// parse application/json
 app.use(bodyParser.json());
 
-//Rutas
+//Routes
 app.use('/', routes());
 
-
-//Conectar a mongodb (desde Docker)
+//Connect to MongoDb
 require('./database/database');
 
-//Puerto del servidor
+//Express port
 app.listen(process.env.PORT);
+
+//Api info
+console.log("Api version:", process.env.API_VERSION);
+console.log("Enviroment:", process.env.NODE_ENV);
 console.log("Express is connected in port", process.env.PORT);

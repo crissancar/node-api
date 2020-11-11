@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const JWTService = require("../services/JWTService");
 const _ = require("underscore");
 
 exports.users = async (req, res) => {
@@ -80,4 +81,26 @@ exports.delete = async (req, res) => {
       error,
     });
   }
+};
+
+exports.auth = async (req, res, next) => {
+  let { email, password } = req.body;
+  let user = await User.findOne({ email });
+  
+  if (!user) {
+    await res.status(401).json({ message: "User not exist" });
+    return next();
+  }
+
+  if (!bcrypt.compareSync(password, user.password)) {
+    await res.status(401).json({ message: "User or password incorrect" });
+    return next();
+  }
+
+  let token = JWTService.create(user);
+
+  res.json({
+    user,
+    token,
+  });
 };
