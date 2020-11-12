@@ -1,7 +1,8 @@
-const bodyParser = require('body-parser');
-const express = require('express');
-const routes = require('./routes/routes');
-const config = require('./config/config');
+const bodyParser = require("body-parser");
+const express = require("express");
+const routes = require("./routes/routes");
+const config = require("./config/config");
+const path = require("path");
 
 //Create Express Server
 const app = express();
@@ -10,11 +11,14 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//Directory public
+app.use(express.static(path.resolve(__dirname, "../public")));
+
 //Routes
-app.use('/', routes());
+app.use("/", routes());
 
 //Connect to MongoDb
-require('./database/database');
+require("./database/database");
 
 //Express port
 app.listen(process.env.PORT);
@@ -23,3 +27,4 @@ app.listen(process.env.PORT);
 console.log("Api version:", process.env.API_VERSION);
 console.log("Enviroment:", process.env.NODE_ENV);
 console.log("Express is connected in port", process.env.PORT);
+console.log("Docker runs in port", 5000);
