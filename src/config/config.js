@@ -4,17 +4,17 @@
 process.env.API_VERSION = '/api/v1';
 
 // ====================
-//  Puerto
+//  Port
 // ====================
 process.env.PORT = process.env.PORT || 3000;
 
 // ====================
-//  Entorno
+//  Enviroment
 // ====================
 process.env.NODE_ENV = process.env.NODE_ENV ||  'dev';
 
 // ====================
-//  Base de datos
+//  Database
 // ====================
 if(process.env.NODE_ENV === 'dev'){
     process.env.URL_DATABASE = 'mongodb://node-api-db/nodeapi';
@@ -27,3 +27,8 @@ if(process.env.NODE_ENV === 'dev'){
 // ====================
 process.env.TOKEN_SEED = process.env.TOKEN_SEED || 'dev-seed-d1f56sd4f1';
 process.env.TOKEN_EXPIRATION = 60 * 60 * 24 * 30;
+
+// ====================
+//  Google SignIn
+// ====================
+process.env.GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '96066858632-1p6k0579pr0f8d78h29p06o0rftgugro.apps.googleusercontent.com';

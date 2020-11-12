@@ -14,6 +14,7 @@ module.exports = function(){
     router.get(API_VERSION + '/users/:id', userController.user);
     router.post(API_VERSION + '/users', userController.register);
     router.post(API_VERSION + '/users/auth', userController.auth);
+    router.post(API_VERSION + '/users/auth/google', userController.google);
     router.put(API_VERSION + '/users/:id', [checkToken], userController.update);
     router.delete(API_VERSION + '/users/:id', [checkToken, checkRole], userController.delete);
 
