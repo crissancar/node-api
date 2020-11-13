@@ -5,3 +5,9 @@ module.exports.hash = async(password) => {
 
     return hashedPassword;
 }
+
+module.exports.compare = async(password, userPassword) => {
+    let passwordMatch = await bcrypt.compareSync(password, userPassword);
+    
+    return passwordMatch;
+}
