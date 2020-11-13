@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
-module.exports.create = (user) => {
-  let token = jwt.sign(
+module.exports.create = async (user) => {
+  let token = await jwt.sign(
     {
       user,
     },
