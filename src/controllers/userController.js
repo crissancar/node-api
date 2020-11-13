@@ -18,10 +18,10 @@ exports.users = async (req, res) => {
 };
 
 exports.user = async (req, res) => {
-  userId = req.params.id;
+  let userId = req.params.id;
 
   try {
-    const user = await User.findById(userId);
+    let user = await User.findById(userId);
     res.json(user);
   } catch (error) {
     res.status(400).json({
@@ -33,7 +33,7 @@ exports.user = async (req, res) => {
 
 exports.register = async (req, res) => {
   const user = new User(req.body);
-  user.password = await bcrypt.hash(req.body.password, 12);
+  user.password = await BcryptService.hash(req.body.password);
 
   try {
     await user.save();
@@ -73,7 +73,7 @@ exports.delete = async (req, res) => {
     });
   } catch (error) {
     res.status(400).json({
-      message: "User not found",
+      message: "User not exists",
       error,
     });
   }
@@ -81,19 +81,22 @@ exports.delete = async (req, res) => {
 
 exports.auth = async (req, res, next) => {
   let { email, password } = req.body;
+
   let user = await User.findOne({ email });
 
   if (!user) {
-    await res.status(401).json({ message: "User not exist" });
+    res.status(401).json({ message: "User not exist" });
     return next();
   }
 
-  if (!bcrypt.compareSync(password, user.password)) {
-    await res.status(401).json({ message: "User or password incorrect" });
+  let matchPassword = await BcryptService.compare(password, user.password);
+
+  if(!matchPassword){
+    res.status(401).json({message: "User or password incorrect"});
     return next();
   }
 
-  let token = JWTService.create(user);
+  let token = await JWTService.create(user);
 
   res.json({
     user,
@@ -101,7 +104,7 @@ exports.auth = async (req, res, next) => {
   });
 };
 
-exports.google = async (req, res, next) => {
+exports.google = async (req, res) => {
   let googleToken = req.body.idtoken;
   // console.log(googleToken);
   let googleUser, userDuplicated;

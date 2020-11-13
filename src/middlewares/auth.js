@@ -4,7 +4,8 @@ module.exports.checkToken = async (req, res, next) => {
   let token = req.get("Authorization");
 
   try {
-    await jwt.verify(token, process.env.TOKEN_SEED);
+    let decodedToken = await jwt.verify(token, process.env.TOKEN_SEED);
+    req.user = decodedToken.user
     next();
   } catch (error) {
     res.status(401).json({ error });
