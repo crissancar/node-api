@@ -1,7 +1,7 @@
 const User = require("../models/User");
-const bcrypt = require("bcrypt");
 const _ = require("underscore");
 const JWTService = require("../services/JWTService");
+const BcryptService = require("../services/BcryptService");
 const GoogleSignInService = require("../services/GoogleSignInService");
 
 exports.users = async (req, res) => {
@@ -109,29 +109,28 @@ exports.google = async (req, res, next) => {
   try {
     googleUser = await GoogleSignInService.verify(googleToken);
   } catch (error) {
-    res.status(403).json(error);
+    res.status(403).json({error: "Incorrect googleToken"});
   }
-
+  
   try {
     userDuplicated = await User.findOne({ email: googleUser.email });
   } catch (error) {
     res.status(500).json(error);
   }
 
-  if (userDuplicated !== null && userDuplicated.google !== false) {
+  if (userDuplicated !== null && userDuplicated.google !== true) {
     return res.status(500).json({ message: "User is registered without Google Account" });
   }
-
+  
   if (userDuplicated !== null) {
     return res.status(500).json({ message: "User already exists" });
   }
-
-  let token = JWTService.create(googleUser);
+  
+  let token = await JWTService.create(googleUser);
 
   let user = new User(googleUser);
-  user.google = true;
-  user.password = await bcrypt.hash(":)", 12);
-
+  user.password = await BcryptService.hash(":)");
+  
   try {
     await user.save();
     res.json({
