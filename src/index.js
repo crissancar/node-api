@@ -3,6 +3,7 @@ const express = require("express");
 const routes = require("./routes/routes");
 const config = require("./config/config");
 const path = require("path");
+const fileUpload = require('express-fileupload');
 
 //Create Express Server
 const app = express();
@@ -13,6 +14,9 @@ app.use(bodyParser.json());
 
 //Directory public
 app.use(express.static(path.resolve(__dirname, "../public")));
+
+//Fileupload
+app.use(fileUpload());
 
 //Routes
 app.use("/", routes());

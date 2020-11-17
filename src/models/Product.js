@@ -13,6 +13,10 @@ const productSchema = new Schema({
     type: String,
     required: false,
   },
+  img: {
+    type: String,
+    required: false,
+  },
   price: {
     type: Number,
     required: [true, "El precio es obligatorio"],
