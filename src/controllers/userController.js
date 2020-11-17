@@ -18,7 +18,13 @@ exports.users = async (req, res) => {
 };
 
 exports.user = async (req, res) => {
-  let userId = req.params.id;
+  let userId;
+
+  if (req.params.id) {
+    userId = req.params.id;
+  } else {
+    userId = id;
+  }
 
   try {
     let user = await User.findById(userId);
@@ -28,6 +34,17 @@ exports.user = async (req, res) => {
       message: "User not exists",
       error,
     });
+  }
+};
+
+exports.userById = async (id) => {
+  let userId = id;
+
+  try {
+    let user = await User.findById(userId);
+    return user;
+  } catch (error) {
+    return error;
   }
 };
 
@@ -91,8 +108,8 @@ exports.auth = async (req, res, next) => {
 
   let matchPassword = await BcryptService.compare(password, user.password);
 
-  if(!matchPassword){
-    res.status(401).json({message: "User or password incorrect"});
+  if (!matchPassword) {
+    res.status(401).json({ message: "User or password incorrect" });
     return next();
   }
 
@@ -112,9 +129,9 @@ exports.google = async (req, res) => {
   try {
     googleUser = await GoogleSignInService.verify(googleToken);
   } catch (error) {
-    res.status(403).json({error: "Incorrect googleToken"});
+    res.status(403).json({ error: "Incorrect googleToken" });
   }
-  
+
   try {
     userDuplicated = await User.findOne({ email: googleUser.email });
   } catch (error) {
@@ -122,18 +139,20 @@ exports.google = async (req, res) => {
   }
 
   if (userDuplicated !== null && userDuplicated.google !== true) {
-    return res.status(500).json({ message: "User is registered without Google Account" });
+    return res
+      .status(500)
+      .json({ message: "User is registered without Google Account" });
   }
-  
+
   if (userDuplicated !== null) {
     return res.status(500).json({ message: "User already exists" });
   }
-  
+
   let token = await JWTService.create(googleUser);
 
   let user = new User(googleUser);
   user.password = await BcryptService.hash(":)");
-  
+
   try {
     await user.save();
     res.json({
@@ -142,5 +161,21 @@ exports.google = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json(error.message);
+  }
+};
+
+exports.image = async (user, fileName, req, res) => {
+  user.img = fileName;
+  const body = _.pick(user, ["img"]);
+
+  try {
+    let updatedUser = await User.findByIdAndUpdate(user._id, body, {
+      new: true,
+      runValidators: true,
+      context: "query",
+    });
+    return updatedUser;
+  } catch (error) {
+    return error;
   }
 };

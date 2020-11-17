@@ -26,7 +26,7 @@ if(process.env.NODE_ENV === 'dev'){
 //  JWT
 // ====================
 process.env.TOKEN_SEED = process.env.TOKEN_SEED || 'dev-seed-d1f56sd4f1';
-process.env.TOKEN_EXPIRATION = 60 * 60 * 24 * 30;
+process.env.TOKEN_EXPIRATION = 60 * 60 * 24 * 300;
 
 // ====================
 //  Google SignIn

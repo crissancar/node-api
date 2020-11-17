@@ -31,6 +31,17 @@ module.exports.product = async (req, res) => {
   }
 };
 
+exports.productById = async (id) => {
+  let productId = id;
+
+  try {
+    let product = await Product.findById(productId);
+    return product;
+  } catch (error) {
+    return error;
+  }
+};
+
 module.exports.create = async (req, res) => {
   let product = new Product(req.body);
   product.user = req.user._id;
@@ -75,4 +86,20 @@ module.exports.search = async (req, res) => {
     .populate("category","name");
 
   res.json(products);
+};
+
+exports.image = async (product, fileName) => {
+  product.img = fileName;
+  const body = _.pick(product, ["img"]);
+
+  try {
+    let updatedProduct = await Product.findByIdAndUpdate(product._id, body, {
+      new: true,
+      runValidators: true,
+      context: "query",
+    });
+    return updatedProduct;
+  } catch (error) {
+    return error;
+  }
 };

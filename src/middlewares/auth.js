@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
+const productController = require("../controllers/productController");
+const userController = require("../controllers/userController");
 
-module.exports.checkToken = async (req, res, next) => {
+
+module.exports.checkUserToken = async (req, res, next) => {
   let token = req.get("Authorization");
 
   try {
@@ -12,7 +15,7 @@ module.exports.checkToken = async (req, res, next) => {
   }
 };
 
-module.exports.checkRole = (req, res, next) => {
+module.exports.checkUserRole = (req, res, next) => {
   let token = req.get("Authorization");
   let decodedToken = jwt.decode(token);
   let user = decodedToken.user;
